@@ -1,0 +1,61 @@
+<config>
+    <matchPatterns>
+        <![CDATA[
+
+# A list of gitignore-like patterns to match directories and files.
+# The pattern starts always with '/' on top of the base directory. Flags can be added before the first '/'
+#
+# Flags:
+# 'r' use regex pattern instead of gitignore-like pattern.
+# '!' or 'i' to negate matches.
+# 'd' match directories only.
+# 'f' match files only.
+#
+# gitignore -> http://git-scm.com/docs/gitignore
+# regex -> https://docs.python.org/3.4/library/re.html
+#
+# A content regex pattern can be added after the path pattern. The patterns should be separated by a tab of four spaces 
+#
+# Examples:
+# '/**' to match all files and directories(using a gitignore-like pattern)
+# 'r/.*' to match all files and directories (using a regex pattern) 
+# 'f/**' to match all files (using a gitignore-like pattern)
+# 'rd/.*' to match all directories (using a regex pattern)
+# '!d/**' unmatch directories previously matched
+# '/**    Sputnik' to match all files with the work 'Sputnik'
+
+        ]]>
+    </matchPatterns>
+
+    <baseDirectoryPath>
+        C:\temp
+    </baseDirectoryPath>
+    <operators>
+        <operator name="Printer" shortcut="P" module="operators"/>
+        
+        <operator name="FileCopier" shortcut="C" module="operators">
+            <destinationDirectory>C:\perm</destinationDirectory>
+        </operator>
+       
+       <!--
+       <operator name="TextFinder" shortcut="T" module="operators">
+            <pattern>(\d+).*?(\d+)</pattern>
+            <outputFormat>\1 - \2</outputFormat>
+       </operator>
+       --> 
+        <!--
+        <operator name="TextFinder" shortcut="T" module="operators">
+            <pattern></pattern>
+        </operator>
+        
+        <operator name="Archiver" shortcut="A" module="operators">
+            <binaryLocation>c:\Program Files\7-Zip\7z.exe</binaryLocation>
+            <destinationDirectory>C:\perm\</destinationDirectory>
+        </operator>
+        
+        <operator name="FileDeleter"  shortcut="D" module="operators"/>
+        
+        -->
+    </operators>
+
+</config>
