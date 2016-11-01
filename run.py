@@ -9,7 +9,8 @@ from filesystem_crawler import parse_match_rules
 def main():
     args = parse_arguments()
 
-    baseDirPath, rawPatterns, opsConfs = parse_config_file(args.conf_file_path)
+    baseDirPath, rawPatterns, opsConfs, ignoreMatchedDirSubtree = (
+        parse_config_file(args.conf_file_path))
 
     matchrules, errors = parse_match_rules(baseDirPath, rawPatterns)
 
@@ -36,7 +37,7 @@ def main():
         print('{description}'.format(description=operator.description()))
     print("\nExecute (y/n)\n")
 
-    while True:
+    while not args.skipConfirmation:
         key = ord(msvcrt.getch())
         if key == ord('y'):
             break
@@ -48,7 +49,7 @@ def main():
             operator.apply(match[0])
 
     crawler = FilesystemCrawler(matchrules, match_callback)
-    matchedPaths = crawler.search(baseDirPath)
+    matchedPaths = crawler.search(baseDirPath, ignoreMatchedDirSubtree)
 
     print('\n{} matches'.format(len(matchedPaths)))
 
@@ -62,6 +63,10 @@ def parse_arguments():
                         nargs='?',
                         default='config.xml',
                         help='the configuration file location')
+
+    parser.add_argument('--skipconfirmation',
+                        dest='skipConfirmation', action='store_true')
+
     args = parser.parse_args()
     return args
 
@@ -70,6 +75,9 @@ def parse_config_file(configFilePath):
     root = ET.parse(configFilePath)
     baseDirPath = root.findtext('baseDirectoryPath').strip()
     rawMatchPatterns = root.findtext('matchPatterns')
+    ignoreMatchedDirSubtree = root.findtext('ignoreMatchedDirSubtree')
+    ignoreMatchedDirSubtree = (False if not ignoreMatchedDirSubtree else
+                               ignoreMatchedDirSubtree.lower() == 'true')
 
     operators = []
     for op in root.find('operators').findall('operator'):
@@ -83,7 +91,7 @@ def parse_config_file(configFilePath):
         opConf['params'] = params
         operators.append(opConf)
 
-    return baseDirPath, rawMatchPatterns, operators
+    return baseDirPath, rawMatchPatterns, operators, ignoreMatchedDirSubtree
 
 
 def load_operators(operatorsConfigurations):
