@@ -84,7 +84,6 @@ def parse_config_file(configFilePath):
         opConf = {}
         opConf['name'] = op.attrib['name']
         opConf['module'] = op.attrib['module']
-        opConf['shortcut'] = op.attrib['shortcut']
         params = {}
         for param in op.getchildren():
             params[param.tag] = param.text.strip()
