@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+import xmltodict
 import msvcrt
 import argparse
 
@@ -35,14 +35,15 @@ def main():
     print("\n[File Operation]")
     for operator in operators:
         print('{description}'.format(description=operator.description()))
-    print("\nExecute (y/n)\n")
 
-    while not args.skipConfirmation:
-        key = ord(msvcrt.getch())
-        if key == ord('y'):
-            break
-        if key == ord('n'):
-            return
+    if not args.skipConfirmation:
+        print("\nExecute (y/n)\n")
+        while True:
+            key = ord(msvcrt.getch())
+            if key == ord('y'):
+                break
+            if key == ord('n'):
+                return
 
     def match_callback(match):
         for operator in operators:
@@ -52,9 +53,6 @@ def main():
     matchedPaths = crawler.search(baseDirPath, ignoreMatchedDirSubtree)
 
     print('\n{} matches'.format(len(matchedPaths)))
-
-    print("\nAll done")
-    msvcrt.getch()
 
 
 def parse_arguments():
@@ -72,23 +70,19 @@ def parse_arguments():
 
 
 def parse_config_file(configFilePath):
-    root = ET.parse(configFilePath)
-    baseDirPath = root.findtext('baseDirectoryPath').strip()
-    rawMatchPatterns = root.findtext('matchPatterns')
-    ignoreMatchedDirSubtree = root.findtext('ignoreMatchedDirSubtree')
-    ignoreMatchedDirSubtree = (False if not ignoreMatchedDirSubtree else
-                               ignoreMatchedDirSubtree.lower() == 'true')
+    with open(configFilePath, 'r') as f:
+        doc = xmltodict.parse(f.read())
+    root = doc['config']
+    baseDirPath = root['baseDirectoryPath'].strip()
+    rawMatchPatterns = root['matchPatterns']
+    ignoreMatchedDirSubtree = root.get('ignoreMatchedDirSubtree', 'false')
+    ignoreMatchedDirSubtree = ignoreMatchedDirSubtree.lower() == 'true'
 
-    operators = []
-    for op in root.find('operators').findall('operator'):
-        opConf = {}
-        opConf['name'] = op.attrib['name']
-        opConf['module'] = op.attrib['module']
-        params = {}
-        for param in op.getchildren():
-            params[param.tag] = param.text.strip()
-        opConf['params'] = params
-        operators.append(opConf)
+    if isinstance(root['operators']['operator'], list):
+        operators = root['operators']['operator']
+    else:
+        operators = []
+        operators.append(root['operators']['operator'])
 
     return baseDirPath, rawMatchPatterns, operators, ignoreMatchedDirSubtree
 
@@ -96,11 +90,9 @@ def parse_config_file(configFilePath):
 def load_operators(operatorsConfigurations):
     operators = []
     for opConf in operatorsConfigurations:
-        opClass = getattr(__import__(opConf['module']), opConf['name'])
-        opInstance = opClass()
-
-        for name, value in opConf['params'].items():
-            opInstance.__dict__[name] = value
+        opClass = getattr(__import__(opConf['@module']), opConf['@name'])
+        opInstance = opClass(opConf)
+        opInstance.params = opConf
         operators.append(opInstance)
 
     return operators

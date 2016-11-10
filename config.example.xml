@@ -31,29 +31,29 @@
         C:\temp
     </baseDirectoryPath>
     <operators>
-        <operator name="Printer" shortcut="P" module="operators"/>
+        <operator name="Printer" module="operators"/>
         
-        <operator name="FileCopier" shortcut="C" module="operators">
+        <operator name="FileCopier" module="operators">
             <destinationDirectory>C:\perm</destinationDirectory>
         </operator>
        
        <!--
-       <operator name="TextFinder" shortcut="T" module="operators">
+       <operator name="TextFinder" module="operators">
             <pattern>(\d+).*?(\d+)</pattern>
             <outputFormat>\1 - \2</outputFormat>
        </operator>
        --> 
         <!--
-        <operator name="TextFinder" shortcut="T" module="operators">
+        <operator name="TextFinder" module="operators">
             <pattern></pattern>
         </operator>
         
-        <operator name="Archiver" shortcut="A" module="operators">
+        <operator name="Archiver" module="operators">
             <binaryLocation>c:\Program Files\7-Zip\7z.exe</binaryLocation>
             <destinationDirectory>C:\perm\</destinationDirectory>
         </operator>
         
-        <operator name="FileDeleter"  shortcut="D" module="operators"/>
+        <operator name="FileDeleter"  module="operators"/>
         
         -->
     </operators>

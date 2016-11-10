@@ -5,6 +5,9 @@ import re
 
 
 class Printer:
+    def __init__(self, params):
+        pass
+
     def description(self):
         return 'Ouputs the file name'
 
@@ -14,8 +17,8 @@ class Printer:
 
 
 class Archiver:
-    def __init__(self):
-        self.destinationDirectory = '.'
+    def __init__(self, params):
+        self.destinationDirectory = params.get('destinationDirectory', '.')
 
     def description(self):
         desc = 'Creates a 7zip archive of the file'
@@ -42,6 +45,9 @@ class Archiver:
 
 
 class FileDeleter:
+    def __init__(self, params):
+        pass
+
     def description(self):
         return 'Deletes the file'
 
@@ -54,6 +60,9 @@ class FileDeleter:
 
 
 class FileCopier:
+    def __init__(self, params):
+        self.destinationDirectory = params.get('destinationDirectory', None)
+
     def description(self):
         return 'Copies the file to {}'.format(self.destinationDirectory)
 
@@ -64,19 +73,14 @@ class FileCopier:
 
 
 class TextFinder():
-    def __init__(self):
-        self.pattern = None
-        self.outputFormat = None
-        # TODO self.outputFile = None
+    def __init__(self, params):
+        self.pattern = params.get('pattern', None)
+        self.outputFormat = params.get('outputFormat', None)
 
     def description(self):
         return 'Search for a pattern in the file. ({})'
 
     def apply(self, filename):
-        print("xx")
-        print(self.pattern)
-        print(self.outputFormat)
-        print("yy")
         with open(filename, 'r') as f:
             content = f.read()
 
