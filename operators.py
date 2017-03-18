@@ -76,19 +76,23 @@ class TextFinder():
     def __init__(self, params):
         self.pattern = params.get('pattern', None)
         self.outputFormat = params.get('outputFormat', None)
+        self.lowerLimit = params.get('lowerLimit', None)
+        self.upperLimit = params.get('upperLimit', None)
 
     def description(self):
-        return 'Search for a pattern in the file. ({})'
+        return 'Search for the following pattern {}'.format(self.pattern)
 
     def apply(self, filename):
         with open(filename, 'r') as f:
             content = f.read()
 
-        for match in re.finditer(self.pattern, content,
-                                 re.DOTALL | re.MULTILINE):
+        for match in re.finditer(self.pattern, content):
 
             if self.outputFormat:
                 result = re.sub(self.pattern, self.outputFormat, match.group())
             else:
                 result = match.group()
-            print(result)
+
+            if ((not self.lowerLimit or self.lowerLimit <= result[:len(self.lowerLimit)]) and
+                (not self.upperLimit or self.upperLimit >= result[:len(self.upperLimit)])):
+                print(result)

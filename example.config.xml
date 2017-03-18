@@ -24,6 +24,7 @@
 # '!d/**' unmatch directories previously matched
 # '/**    Sputnik' to match all files with the work 'Sputnik'
 
+/**
         ]]>
     </matchPatterns>
 
@@ -31,31 +32,65 @@
         C:\temp
     </baseDirectoryPath>
     <operators>
+
+        <!--
+            Prints the name of the file
+        -->
         <operator name="Printer" module="operators"/>
         
+
+        <!--
+            Copies matched files to the destination directory
+        -->
+        <!--
         <operator name="FileCopier" module="operators">
             <destinationDirectory>C:\perm</destinationDirectory>
         </operator>
-       
-       <!--
-       <operator name="TextFinder" module="operators">
-            <pattern>(\d+).*?(\d+)</pattern>
-            <outputFormat>\1 - \2</outputFormat>
-       </operator>
-       --> 
+        -->
+
+
+        <!--
+            Search for matches of <pattern> in the file.
+
+            <outputFormat> is optional and allows changing the output format
+            
+            lowerLimit and upperLimit are optional.
+            If the string comparison of matches doesn't fall into this limits,
+            the matches is not shown
+
+            the match function is called without hardcoded flags.
+            flags can be added in the regex pattern as follows:
+            (?i) - ignore case
+            (?m) - multiline
+            (?s) - dot matches all
+
+        -->
         <!--
         <operator name="TextFinder" module="operators">
-            <pattern></pattern>
+            
+            <pattern>(?m)(\d+).*?(\d+)</pattern>
+            <outputFormat>\2 - \1</outputFormat>
+
+            <lowerLimit>3</lowerLimit>
+            <upperLimit>5</upperLimit>
         </operator>
-        
+        -->
+
+
+        <!--
+            Archives files or directories into a destination directory
+        -->
+        <!--
         <operator name="Archiver" module="operators">
             <binaryLocation>c:\Program Files\7-Zip\7z.exe</binaryLocation>
             <destinationDirectory>C:\perm\</destinationDirectory>
         </operator>
-        
-        <operator name="FileDeleter"  module="operators"/>
-        
         -->
-    </operators>
 
+
+        <!--
+        <operator name="FileDeleter"  module="operators"/>
+        -->
+
+    </operators>
 </config>
